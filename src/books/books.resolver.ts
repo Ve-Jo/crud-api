@@ -1,27 +1,43 @@
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+
+import { Book } from 'src/graphql.schema';
 import { BooksService } from './books.service';
-import { Mutation, Query, Resolver } from '@nestjs/graphql';
 
 @Resolver()
 export class BooksResolver {
   constructor(private booksService: BooksService) {}
 
-  @Query()
+  @Query(() => [Book])
   getBooks() {
     return this.booksService.getBooks();
   }
 
-  @Mutation()
-  createBook(name: string, year: number, author: string) {
+  @Query(() => Book)
+  getBookById() {
+    return this.booksService.getBooks();
+  }
+
+  @Mutation(() => Book)
+  createBook(
+    @Args('name') name: string,
+    @Args('year') year: number,
+    @Args('author') author: string,
+  ) {
     return this.booksService.createBook(name, year, author);
   }
 
-  @Mutation()
-  deleteBook(id: string) {
+  @Mutation(() => Boolean)
+  deleteBook(@Args('id') id: string) {
     return this.booksService.deleteBook(id);
   }
 
-  @Mutation()
-  updateBook(id: string, name: string, year: number, author: string) {
+  @Mutation(() => Book)
+  updateBook(
+    @Args('id') id: string,
+    @Args('name') name: string,
+    @Args('year') year: number,
+    @Args('author') author: string,
+  ) {
     return this.booksService.updateBook(id, name, year, author);
   }
 }
